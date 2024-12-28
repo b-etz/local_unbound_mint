@@ -14,9 +14,11 @@ chmod +x /etc/cron.weekly/get_adhosts.sh
 # Generate adhosts.block and check Unbound's configuration
 /bin/bash /etc/cron.weekly/get_adhosts.sh
 
-# Update NetworkManager's configuration
+# Update NetworkManager and systemd-resolved configuration
 cp -f unbound-net-man.conf /etc/NetworkManager/conf.d
 systemctl restart NetworkManager
+systemctl stop systemd-resolved
+systemctl disable systemd-resolved
 
 # Update the DNS resolver configuration
 chmod -x /etc/resolvconf/update.d/unbound
