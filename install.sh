@@ -5,24 +5,25 @@ apt update
 apt install -y unbound
 
 # Create or replace Unbound's configuration files
-cp -f local.conf /etc/unbound/unbound.conf.d
+cp -fv local.conf /etc/unbound/unbound.conf.d
 
 # Create or replace the adblock list retrieval script
-mkdir -p /etc/unbound/logs/
-cp -f get_adhosts.sh /etc/cron.weekly
+mkdir -pv /etc/unbound/logs/
+cp -fv get_adhosts.sh /etc/cron.weekly
 chmod +x /etc/cron.weekly/get_adhosts.sh
 # Generate adhosts.block and check Unbound's configuration
 /bin/bash /etc/cron.weekly/get_adhosts.sh
 
 # Update NetworkManager and systemd-resolved configuration
-cp -f unbound-net-man.conf /etc/NetworkManager/conf.d
+cp -fv unbound-net-man.conf /etc/NetworkManager/conf.d
 systemctl restart NetworkManager
 systemctl stop systemd-resolved
 systemctl disable systemd-resolved
 
 # Update the DNS resolver configuration
 chmod -x /etc/resolvconf/update.d/unbound
-cp -f resolv.conf /etc
+rm -fv /etc/resolv.conf
+cp -fv resolv.conf /etc
 
 # Restart Unbound and enable it on reboot
 systemctl restart unbound
